@@ -1,0 +1,25 @@
+name: Run Minecraft Bot
+
+on:
+  workflow_dispatch: # Кнопка ручного запуска
+  schedule:
+    - cron: '0 */6 * * *' # Авто-перезапуск каждые 6 часов
+
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Bot
+        # Бот будет работать до 6 часов (лимит GitHub)
+        run: node index.js
