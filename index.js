@@ -1,42 +1,41 @@
 const mineflayer = require('mineflayer');
 
-// --- НАСТРОЙКИ ---
+// --- ТВОИ НАСТРОЙКИ ---
 const settings = {
-    host: 'surviving228.aternos.me',    // Сюда впиши IP (например: play.server.ru)
-    port: 25565,               // Порт (обычно 25565)
-    username: 'SERRRUGA_BOOOT',     // Ник для бота
-    version: false             // Авто-определение версии
+    host: 'surviving228.aternos.me', 
+    port: 25565,               
+    username: 'SERRRUGA_BOOOT',     
+    version: '1.21.4' // Указал версию вручную, чтобы не было ошибки 1.21.10
 };
 
 function startBot() {
     const bot = mineflayer.createBot(settings);
 
     bot.on('spawn', () => {
-        console.log('Бот успешно заспавнился!');
-        // Если на сервере нужно логиниться, убери // снизу и впиши пароль:
-        // bot.chat('/login твой_пароль');
+        console.log('Бот успешно заспавнился на Aternos!');
     });
 
-    // Чтобы бота не кикнуло за АФК, он будет иногда приседать
+    // Анти-АФК: приседает раз в минуту
     setInterval(() => {
         if (bot.entity) {
             bot.setControlState('sneak', true);
             setTimeout(() => bot.setControlState('sneak', false), 500);
         }
-    }, 60000); // Раз в минуту
+    }, 60000);
 
     bot.on('chat', (username, message) => {
         if (username === bot.username) return;
-        if (message === 'привет') bot.chat(`Привет, ${username}! Я запущен через GitHub.`);
+        if (message === 'привет') bot.chat(`Привет, ${username}! Я тут.`);
     });
 
-    // Авто-переподключение
-    bot.on('end', () => {
-        console.log('Бот отключился. Пробую зайти снова через 30 секунд...');
+    bot.on('end', (reason) => {
+        console.log(`Бот отключился (${reason}). Реконнект через 30 секунд...`);
         setTimeout(startBot, 30000);
     });
 
-    bot.on('error', (err) => console.log('Ошибка:', err));
+    bot.on('error', (err) => {
+        console.log('Произошла ошибка:', err.message);
+    });
 }
 
 startBot();
