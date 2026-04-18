@@ -1,40 +1,32 @@
 const mineflayer = require('mineflayer');
 
-// --- ТВОИ НАСТРОЙКИ ---
 const settings = {
     host: 'surviving228.aternos.me', 
     port: 25565,               
     username: 'SERRRUGA_BOOOT',     
-    version: '1.21.4' // Указал версию вручную, чтобы не было ошибки 1.21.10
+    version: '1.21.4' 
 };
 
 function startBot() {
     const bot = mineflayer.createBot(settings);
 
     bot.on('spawn', () => {
-        console.log('Бот успешно заспавнился на Aternos!');
+        console.log('УСПЕХ: Бот заспавнился!');
     });
 
-    // Анти-АФК: приседает раз в минуту
-    setInterval(() => {
-        if (bot.entity) {
-            bot.setControlState('sneak', true);
-            setTimeout(() => bot.setControlState('sneak', false), 500);
-        }
-    }, 60000);
-
-    bot.on('chat', (username, message) => {
-        if (username === bot.username) return;
-        if (message === 'привет') bot.chat(`Привет, ${username}! Я тут.`);
+    // Это покажет в консоли GitHub, ПОЧЕМУ сервер выкинул бота
+    bot.on('kicked', (reason) => {
+        console.log('МЕНЯ КИКНУЛИ! Причина:');
+        console.log(reason); // Тут будет текст из майна (например, "Wait 5 sec")
     });
 
     bot.on('end', (reason) => {
-        console.log(`Бот отключился (${reason}). Реконнект через 30 секунд...`);
-        setTimeout(startBot, 30000);
+        console.log(`Соединение закрыто. Причина: ${reason}`);
+        setTimeout(startBot, 10000); // Пробуем каждые 10 секунд
     });
 
     bot.on('error', (err) => {
-        console.log('Произошла ошибка:', err.message);
+        console.log('Критическая ошибка:', err.message);
     });
 }
 
