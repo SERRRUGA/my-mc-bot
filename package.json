@@ -1,7 +1,6 @@
 {
-  "name": "mc-bot-github",
+  "name": "mc-bot",
   "version": "1.0.0",
-  "main": "index.js",
   "dependencies": {
     "mineflayer": "^4.20.0",
     "minecraft-protocol": "^1.53.0"
