@@ -3,30 +3,34 @@ const mineflayer = require('mineflayer');
 const settings = {
     host: 'surviving228.aternos.me', 
     port: 25565,               
-    username: 'SERRRUGA_BOOOT',     
-    version: '1.21.4' 
+    username: 'SERRRUGA_BOOOT',
+    // Указываем версию 1.21.1 и протокол 768, который нужен для 1.21.10
+    version: '1.21.1'
 };
 
 function startBot() {
-    const bot = mineflayer.createBot(settings);
+    // Вручную задаем протокол перед созданием бота
+    const bot = mineflayer.createBot({
+        ...settings,
+        fakeHost: settings.host,
+        protocolVersion: 768 
+    });
 
     bot.on('spawn', () => {
-        console.log('УСПЕХ: Бот заспавнился!');
+        console.log('УРА! Бот зашел на сервер 1.21.10');
     });
 
-    // Это покажет в консоли GitHub, ПОЧЕМУ сервер выкинул бота
     bot.on('kicked', (reason) => {
-        console.log('МЕНЯ КИКНУЛИ! Причина:');
-        console.log(reason); // Тут будет текст из майна (например, "Wait 5 sec")
+        console.log('КИКНУЛИ:', reason);
     });
 
-    bot.on('end', (reason) => {
-        console.log(`Соединение закрыто. Причина: ${reason}`);
-        setTimeout(startBot, 10000); // Пробуем каждые 10 секунд
+    bot.on('end', () => {
+        console.log('Соединение потеряно. Реконнект...');
+        setTimeout(startBot, 15000);
     });
 
     bot.on('error', (err) => {
-        console.log('Критическая ошибка:', err.message);
+        console.log('Ошибка:', err.message);
     });
 }
 
